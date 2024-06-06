@@ -142,7 +142,7 @@ const ProductCard = (props) => {
   );
 };
 
-export const detectBrand = (productName) => {
+const detectBrand = (productName) => {
   const brands = [
     "Apple",
     "Samsung",
@@ -167,7 +167,7 @@ export const detectBrand = (productName) => {
   return "Unknown Brand";
 };
 
-export const detectShop = (url) => {
+const detectShop = (url) => {
   const shops = ["Amazon", "Flipkart", "Chroma"];
 
   for (const shop of shops) {
