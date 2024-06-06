@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import JSON_DATA from "./data/combinedProducts.json";
 import { Input } from "antd";
+import Header from "./component/Header/Header";
 
 const { Search } = Input;
 function App() {
@@ -44,10 +45,37 @@ function App() {
 
   return (
     <div className="overflow-hidden h-full">
-      <div className="text-[50px] pb-[24px] text-center edu-vic-wa-nt-beginner-regular">
-        C & R<h1>COMPARE AND RECOMMENDATIONS</h1>
-      </div>
-      <div className="w-full flex justify-center">
+      <Header
+        title="COMPARE AND RECOMMENDATIONS"
+        searchBar={
+          <Search
+            size="large"
+            className="w-[50%]"
+            onChange={onChangeHandler}
+            onPressEnter={() => {
+              if (!searchKey) {
+                setFilteredData(JSON_DATA);
+              } else if (/^[0-9]+$/.test(searchKey)) {
+                setFilteredData(
+                  JSON_DATA.filter((data) =>
+                    data.price.includes(searchKey.toLocaleLowerCase())
+                  )
+                );
+              } else if (/[a-zA-Z]/.test(searchKey)) {
+                setFilteredData(
+                  JSON_DATA.filter((data) =>
+                    data.productName
+                      .toLocaleLowerCase()
+                      .includes(searchKey.toLocaleLowerCase())
+                  )
+                );
+              }
+            }}
+            placeholder="Search for the products"
+          />
+        }
+      />
+      {/* <div className="w-full flex justify-center">
         {
           <Search
             size="large"
@@ -75,7 +103,7 @@ function App() {
             placeholder="Search for the products"
           />
         }
-      </div>
+      </div> */}
       <div className="flex justify-between py-[16px] px-[40px]">
         <div className="text-left">
           {searchKey ? `Showing results for : ${searchKey}` : ""}
@@ -86,7 +114,7 @@ function App() {
       </div>
       <div
         className="flex flex-wrap w-full justify-between overflow-y-auto px-[24px] custom-scroll"
-        style={{ maxHeight: "65vh" }}
+        style={{ maxHeight: "78vh" }}
         ref={containerRef}
       >
         {filteredData?.slice(0, itemsToShow)?.map((data, index) => (
