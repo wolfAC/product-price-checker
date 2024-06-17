@@ -64,7 +64,7 @@ function App() {
               } else if (/[a-zA-Z]/.test(searchKey)) {
                 setFilteredData(
                   JSON_DATA.filter((data) =>
-                    data.productName
+                    data.productname
                       .toLocaleLowerCase()
                       .includes(searchKey.toLocaleLowerCase())
                   )
@@ -93,7 +93,7 @@ function App() {
               } else if (/[a-zA-Z]/.test(searchKey)) {
                 setFilteredData(
                   JSON_DATA.filter((data) =>
-                    data.productName
+                    data.productname
                       .toLocaleLowerCase()
                       .includes(searchKey.toLocaleLowerCase())
                   )
@@ -148,20 +148,30 @@ const ProductCard = (props) => {
       "https://www.myg.in/images/thumbnails/624/460/detailed/51/S24ULTRAGREY1.JPEG",
     vivo: "https://www.cellspare.com/image/cache/catalog/data/Accessories%20Villa/Product%20image/vivo-x80-rear-housing-panel-module-urben-blue-1000x1000.jpg",
     oppo: "https://m-cdn.phonearena.com/images/phones/62918-940/OPPO-F1s.jpg?w=1",
+    charger: "https://images.app.goo.gl/1f12DGCicsJxTt4A7",
+    boat: "https://m.media-amazon.com/images/I/61P2W6vblIL._SX679_.jpg",
+    dell: "https://images.app.goo.gl/cEsk7ze7ozG2sX5n6",
+    computer: "https://images.app.goo.gl/PJ5EJ7LsSHuVPBVz8",
+    redmi: "https://images.app.goo.gl/fqDABfQMoPpRcZhc7",
+    hp: "https://images.app.goo.gl/8iMfopU5bxt8LHfs7",
   };
+
+  console.log(detectBrand(props.data.productname), props.data.productname);
 
   return (
     <div className="p-[16px]">
-      <h2 className="w-[300px] pb-[16px]">{props.data.productName}</h2>
+      <h2 className="w-[300px] pb-[16px]">{props.data.productname}</h2>
       <a href={props.data.url} target="_blank" rel="noopener noreferrer">
         <img
           className="w-[300px] h-[300px]"
           style={{ objectFit: "cover" }}
-          src={data[detectBrand(props.data.productName)]}
-          alt={props.data.productName}
+          // src={data[detectBrand(props.data.productname)]}
+          src={props.data.imageurl || data[detectBrand(props.data.productname)]}
+          alt={props.data.productname}
         />
       </a>
       <div className="flex justify-between">
+        {/* {console.log(fetchProductImage(props.data.url))} */}
         <p className="capitalize">{detectShop(props.data.url)}</p>
         <p>Price: ₹{props.data.price}</p>
         <p>Ratings: {props.data.ratings} ★</p>
@@ -170,12 +180,22 @@ const ProductCard = (props) => {
   );
 };
 
-const detectBrand = (productName) => {
+const detectBrand = (productname) => {
   const brands = [
     "Apple",
     "Samsung",
     "Huawei",
-    "Xiaomi",
+    "Computer",
+    "Redmi",
+    "MI",
+    "realme",
+    "LEAF",
+    "pTron",
+    "Dell",
+    "HP",
+    "ASUS",
+    "Boat",
+    "Lenovo",
     "OnePlus",
     "Google",
     "Sony",
@@ -187,7 +207,7 @@ const detectBrand = (productName) => {
   ];
 
   for (const brand of brands) {
-    if (productName.toLowerCase().includes(brand.toLowerCase())) {
+    if (productname?.toLowerCase()?.includes(brand.toLowerCase())) {
       return brand.toLocaleLowerCase();
     }
   }
@@ -196,7 +216,7 @@ const detectBrand = (productName) => {
 };
 
 const detectShop = (url) => {
-  const shops = ["Amazon", "Flipkart", "Chroma"];
+  const shops = ["Amazon", "Flipkart", "Croma"];
 
   for (const shop of shops) {
     if (url.toLowerCase().includes(shop.toLowerCase())) {
@@ -205,4 +225,20 @@ const detectShop = (url) => {
   }
 
   return "Unknown Shop";
+};
+
+const fetchProductImage = async (productUrl) => {
+  try {
+    const response = await fetch(productUrl);
+    if (!response.ok) {
+      throw new Error(`Network response was not ok: ${response.statusText}`);
+    }
+    const data = await response.json();
+    // Adjust the path according to your API's response structure
+    const imageurl = data.imageurl;
+    return imageurl;
+  } catch (error) {
+    console.error("Error fetching product image:", error);
+    return null;
+  }
 };
